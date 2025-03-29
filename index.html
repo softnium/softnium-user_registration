@@ -189,25 +189,16 @@
       let currentValue = parseInt(numUsersInput.value);
       if (currentValue > 1) numUsersInput.value = currentValue - 1;
     });
-
+  
     document.getElementById('clientForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-
-      // Validate password matching
-      // const password = document.getElementById('password').value;
-      // const confirmPassword = document.getElementById('confirmPassword').value;
-      // if (password !== confirmPassword) {
-      //   alert("Passwords do not match.");
-      //   return;
-      // }
-
+  
       // Collect form data
       const formData = {
         firstName: document.getElementById('firstName').value,
         lastName: document.getElementById('lastName').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
-        // password: password,
         address: {
           line1: document.getElementById('addressLine1').value,
           city: document.getElementById('city').value,
@@ -216,28 +207,31 @@
         },
         companyName: document.getElementById('companyName').value,
         provided_services: document.getElementById('provided_services').value,
-        numUsers: document.getElementById('numUsers').value,
+        numUsers: parseInt(document.getElementById('numUsers').value) || 1,  // Ensure number type
       };
-
+  
       try {
         const response = await fetch("https://rppjk0dpbd.execute-api.ap-south-1.amazonaws.com/test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
-
+  
+        const result = await response.json(); // Parse response first
+  
         if (response.ok) {
           alert("Form submitted successfully!");
           window.location.href = "thankyou.html";
         } else {
-          const result = await response.json();
-          alert(`Error: ${result.message}`);
+          console.error("Error response:", result);
+          alert(`Error: ${result.message || "Something went wrong. Please try again."}`);
         }
       } catch (error) {
         console.error("Error submitting form:", error);
-        alert("Failed to submit form. Please try again.");
+        alert("Network error. Please check your connection and try again.");
       }
     });
   </script>
+  
 </body>
 </html>
