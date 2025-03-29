@@ -132,14 +132,19 @@
         <label for="email">Email ID:</label>
         <input type="email" id="email" name="email" required>
         
-        <label for="password">Password:</label>
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" required>
+        
+        <!-- <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         
         <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <input type="password" id="confirmPassword" name="confirmPassword" required> -->
+
       </fieldset>
 
       <fieldset>
+
         <legend>Address Information</legend>
         <label for="addressLine1">Address Line 1:</label>
         <input type="text" id="addressLine1" name="addressLine1" required>
@@ -158,6 +163,9 @@
         <legend>Additional Information</legend>
         <label for="companyName">Company Name:</label>
         <input type="text" id="companyName" name="companyName" required>
+
+        <label for="provided_services">List of Services Provided:</label>
+        <input type="text" id="provided_services" name="provided_services" required>
         
         <label>Number of Users (max 10):</label>
         <div class="num-users-container">
@@ -186,19 +194,20 @@
       e.preventDefault();
 
       // Validate password matching
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-      }
+      // const password = document.getElementById('password').value;
+      // const confirmPassword = document.getElementById('confirmPassword').value;
+      // if (password !== confirmPassword) {
+      //   alert("Passwords do not match.");
+      //   return;
+      // }
 
       // Collect form data
       const formData = {
         firstName: document.getElementById('firstName').value,
         lastName: document.getElementById('lastName').value,
         email: document.getElementById('email').value,
-        password: password,
+        phone: document.getElementById('phone').value,
+        // password: password,
         address: {
           line1: document.getElementById('addressLine1').value,
           city: document.getElementById('city').value,
@@ -206,6 +215,7 @@
           country: document.getElementById('country').value,
         },
         companyName: document.getElementById('companyName').value,
+        provided_services: document.getElementById('provided_services').value,
         numUsers: document.getElementById('numUsers').value,
       };
 
