@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Client Details Form</title>
+  <title>Registration Form</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -57,13 +57,6 @@
       border-radius: 5px;
       transition: border-color 0.3s ease;
       box-sizing: border-box;
-    }
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    input[type="password"]:focus,
-    input[type="number"]:focus {
-      border-color: #7aa0c4;
-      outline: none;
     }
     button {
       background: #7aa0c4;
@@ -128,7 +121,6 @@
   <div class="container">
     <h1>Client Details Form</h1>
     <form id="clientForm">
-      <!-- Personal Information Section -->
       <fieldset>
         <legend>Personal Information</legend>
         <label for="firstName">First Name:</label>
@@ -140,24 +132,22 @@
         <label for="email">Email ID:</label>
         <input type="email" id="email" name="email" required>
         
-        <label for="password">Password:</label>
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" required>
+        
+        <!-- <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
         
         <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <input type="password" id="confirmPassword" name="confirmPassword" required> -->
+
       </fieldset>
-      
-      <!-- Address Information Section -->
+
       <fieldset>
+
         <legend>Address Information</legend>
         <label for="addressLine1">Address Line 1:</label>
         <input type="text" id="addressLine1" name="addressLine1" required>
-        
-        <label for="addressLine2">Address Line 2:</label>
-        <input type="text" id="addressLine2" name="addressLine2">
-        
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location" required>
         
         <label for="city">City:</label>
         <input type="text" id="city" name="city" required>
@@ -165,18 +155,17 @@
         <label for="state">State:</label>
         <input type="text" id="state" name="state" required>
         
-        <label for="zip">Zip Code:</label>
-        <input type="text" id="zip" name="zip" required>
-        
         <label for="country">Country:</label>
         <input type="text" id="country" name="country" required>
       </fieldset>
-      
-      <!-- Additional Information Section -->
+
       <fieldset>
         <legend>Additional Information</legend>
         <label for="companyName">Company Name:</label>
         <input type="text" id="companyName" name="companyName" required>
+
+        <label for="provided_services">List of Services Provided:</label>
+        <input type="text" id="provided_services" name="provided_services" required>
         
         <label>Number of Users (max 10):</label>
         <div class="num-users-container">
@@ -184,83 +173,70 @@
           <input type="number" id="numUsers" name="numUsers" value="1" min="1" max="10" readonly>
           <button type="button" id="increment">+</button>
         </div>
-        
-        <label for="servicesInput">Services Provided:</label>
-        <input type="text" id="servicesInput" placeholder="Enter a service">
-        <button type="button" id="addService">Add Service</button>
-        
-        <div id="servicesList" class="services-list"></div>
       </fieldset>
-      
+
       <button type="submit">Submit</button>
     </form>
   </div>
 
   <script>
-    // --- Number of Users +/- functionality ---
     const numUsersInput = document.getElementById('numUsers');
     document.getElementById('increment').addEventListener('click', () => {
       let currentValue = parseInt(numUsersInput.value);
-      if (currentValue < 10) {
-        numUsersInput.value = currentValue + 1;
-      }
+      if (currentValue < 10) numUsersInput.value = currentValue + 1;
     });
     document.getElementById('decrement').addEventListener('click', () => {
       let currentValue = parseInt(numUsersInput.value);
-      if (currentValue > 1) {
-        numUsersInput.value = currentValue - 1;
-      }
+      if (currentValue > 1) numUsersInput.value = currentValue - 1;
     });
 
-    // --- Services Provided functionality ---
-    const services = [];
-    const servicesListDiv = document.getElementById('servicesList');
-    
-    document.getElementById('addService').addEventListener('click', () => {
-      const serviceInput = document.getElementById('servicesInput');
-      const serviceValue = serviceInput.value.trim();
-      if (serviceValue !== '') {
-        services.push(serviceValue);
-        serviceInput.value = '';
-        updateServicesList();
-      }
-    });
-    
-    function updateServicesList() {
-      servicesListDiv.innerHTML = '';
-      services.forEach((service, index) => {
-        const serviceItem = document.createElement('div');
-        serviceItem.className = 'service-item';
-        serviceItem.innerHTML = `<span>${service}</span> <button type="button" onclick="removeService(${index})">Remove</button>`;
-        servicesListDiv.appendChild(serviceItem);
-      });
-    }
-    
-    function removeService(index) {
-      services.splice(index, 1);
-      updateServicesList();
-    }
-    
-    // --- Form submission handler with validation ---
-    document.getElementById('clientForm').addEventListener('submit', function(e) {
+    document.getElementById('clientForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-      
+
       // Validate password matching
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
+      // const password = document.getElementById('password').value;
+      // const confirmPassword = document.getElementById('confirmPassword').value;
+      // if (password !== confirmPassword) {
+      //   alert("Passwords do not match.");
+      //   return;
+      // }
+
+      // Collect form data
+      const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        // password: password,
+        address: {
+          line1: document.getElementById('addressLine1').value,
+          city: document.getElementById('city').value,
+          state: document.getElementById('state').value,
+          country: document.getElementById('country').value,
+        },
+        companyName: document.getElementById('companyName').value,
+        provided_services: document.getElementById('provided_services').value,
+        numUsers: document.getElementById('numUsers').value,
+      };
+
+      try {
+        const response = await fetch("https://rppjk0dpbd.execute-api.ap-south-1.amazonaws.com/test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          alert("Form submitted successfully!");
+          window.location.href = "thankyou.html";
+        } else {
+          const result = await response.json();
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("Failed to submit form. Please try again.");
       }
-      
-      // Validate that at least one service is provided
-      if (services.length === 0) {
-        alert("Please add at least one service.");
-        return;
-      }
-      
-      // If all validations pass, simulate form submission and redirect to thank-you page
-      window.location.href = "thankyou.html";
     });
   </script>
 </body>
